@@ -1,0 +1,23 @@
+/subsystem=messaging-activemq:write-attribute(name=global-client-thread-pool-max-size,value=128)
+
+/subsystem=messaging-activemq/remote-connector=netty-remote-throughput:add(params={ssl-enabled=true,trust-store-path=${env.AMQ7_TRUST_STORE_PATH},trust-store-password=${env.AMQ7_TRUST_STORE_PASSWORD}},socket-binding=messaging-remote-throughput)
+
+/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=messaging-remote-throughput:add(host=${env.AMQ7_BROKER_HOST}, port=${env.AMQ7_BROKER_PORT})
+
+/subsystem=messaging-activemq/pooled-connection-factory=activemq-ra-remote:add(transaction=xa,entries=[java:/RemoteJmsXA, java:jboss/RemoteJmsXA, java:jboss/DefaultJMSConnectionFactory], connectors=[netty-remote-throughput], enable-amq1-prefix="false", user=${env.AMQ7_BROKER_USER}, password=${env.AMQ7_BROKER_PASSWORD})
+
+
+
+/subsystem=messaging-activemq/external-jms-queue=HELLOWORLDMDBQueueSink:add(entries=[java:/HELLOWORLDMDBQueueSink], enable-amq1-prefix="false")
+
+/subsystem=messaging-activemq/external-jms-queue=HELLOWORLDMDBQueue:add(entries=[java:/HELLOWORLDMDBQueue], enable-amq1-prefix="false")
+
+/subsystem=ee/service=default-bindings:write-attribute(name=jms-connection-factory, value="java:jboss/DefaultJMSConnectionFactory")
+
+/subsystem=ejb3:write-attribute(name=default-resource-adapter-name, value=activemq-ra-remote)
+
+
+
+/subsystem=logging/logger=org.jboss.as.quickstarts.mdb:add(level=${env.APPLICATION_LOG_LEVEL:INFO})
+
+/subsystem=logging/root-logger=ROOT:write-attribute(name=level,value=${env.ROOT_LOG_LEVEL:INFO})
