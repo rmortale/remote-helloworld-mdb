@@ -1,3 +1,5 @@
 /.idea/
 /target/
 /start-wildfly.sh
+/charts/helm-dev.yaml
+/dev-env.env
